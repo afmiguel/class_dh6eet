@@ -31,7 +31,7 @@ impl SharedData {
         println!("Incrementing value for '{}' from {} to {}", self.id, self.value, self.value + 1);
         self.value += 1;
     }
-    
+
 
     fn display(&self) {
         println!("Data ID: {}, Current Value: {}", self.id, self.value);
@@ -42,22 +42,25 @@ fn main() {
     // Main Moment 1: Initial setup.
     // Create an instance of SharedData wrapped in RefCell (for interior mutability)
     // and then wrapped in Rc (for shared ownership).
-    // TODO
+    let shared_item = Rc::new(RefCell::new(SharedData::new("ID1", 10)));
 
     // Main Moment 2: Observing initial state.
     // Print the initial state of the shared data and its reference count.
     // .borrow() is used for immutable access to the data inside RefCell.
-    // TODO
+    println!("-- Valor Inicial --");
+    shared_item.borrow().display(); // <- A referencia é criada e dropada após seu uso
 
     // Main Moment 3: Component A gets shared access.
     // Clone the Rc to give Component A shared ownership.
     // The strong count increases. Component A reads the current state.
-    // TODO
+    let component_a_ref = Rc::clone(&shared_item);
+    component_a_ref.borrow().display();
 
     // Main Moment 4: Component B gets shared access.
     // Clone the Rc again for Component B.
     // The strong count increases further.
-    // TODO
+    let component_b_ref = Rc::clone(&shared_item);
+    component_b_ref.borrow().display();
 
     // Main Moment 5: Component B modifies the shared data.
     // .borrow_mut() is used for mutable access. This call will panic if
